@@ -2,8 +2,7 @@
 
 USING_NS_CC;
 
-Scene* HelloWorld::createScene()
-{
+Scene* HelloWorld::createScene() {
     // 'scene' is an autorelease object
     auto scene = Scene::create();
     
@@ -18,12 +17,10 @@ Scene* HelloWorld::createScene()
 }
 
 // on "init" you need to initialize your instance
-bool HelloWorld::init()
-{
+bool HelloWorld::init() {
     //////////////////////////////
     // 1. super init first
-    if ( !Layer::init() )
-    {
+    if (!Layer::init()) {
         return false;
     }
     
@@ -54,7 +51,7 @@ bool HelloWorld::init()
     // add a label shows "Hello World"
     // create and initialize a label
     
-    auto label = Label::createWithTTF("Hello World", "fonts/Marker Felt.ttf", 24);
+    auto label = Label::createWithTTF("Tutorials - Lights example", "fonts/Marker Felt.ttf", 24);
     
     // position the label on the center of the screen
     label->setPosition(Vec2(origin.x + visibleSize.width/2,
@@ -65,6 +62,7 @@ bool HelloWorld::init()
 
     // add "HelloWorld" splash screen"
     auto sprite = Sprite::create("HelloWorld.png");
+    sprite->setScale(2.0f);
 
     // position the sprite on the center of the screen
     sprite->setPosition(Vec2(visibleSize.width/2 + origin.x, visibleSize.height/2 + origin.y));
@@ -72,12 +70,30 @@ bool HelloWorld::init()
     // add the sprite as a child to this layer
     this->addChild(sprite, 0);
     
+    _timer = 0.0f;
+
+    _shadowLayer = ShadowLayer::create();
+    addChild(_shadowLayer);
+    
+    scheduleUpdate();
+
     return true;
 }
 
+void HelloWorld::update(float dt) {
+    //roll around center of the screen
+    Point center = Director::getInstance()->getVisibleSize();
+    int circleRadius = 200;
+    float lightSize = sinf(_timer) * 50 + 100;
+    Point position = Point(cosf(_timer) * circleRadius, sinf(_timer) * circleRadius);
+    _shadowLayer->setLightPosition(position + center / 2.0f);
+    _shadowLayer->setLightSize(fabs(lightSize));
+                                   
+    _timer += dt;
+}
 
-void HelloWorld::menuCloseCallback(Ref* pSender)
-{
+
+void HelloWorld::menuCloseCallback(Ref* pSender) {
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_WP8) || (CC_TARGET_PLATFORM == CC_PLATFORM_WINRT)
 	MessageBox("You pressed the close button. Windows Store Apps do not implement a close button.","Alert");
     return;
