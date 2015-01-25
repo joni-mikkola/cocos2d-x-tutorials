@@ -1,4 +1,5 @@
 #include "HelloWorldScene.h"
+#include "SimpleAudioEngine.h"
 
 USING_NS_CC;
 
@@ -76,6 +77,14 @@ bool HelloWorld::init() {
     addChild(_shadowLayer);
     
     scheduleUpdate();
+
+    //Sample audio from: http://freesound.org/people/FREDIOHEAD/sounds/170288/
+    //Example for using MusicTo
+    //Fade in and fade out
+    CocosDenshion::SimpleAudioEngine::getInstance()->setBackgroundMusicVolume(0.0f);
+    CocosDenshion::SimpleAudioEngine::getInstance()->playBackgroundMusic("music/drumbeat.mp3");
+    Sequence* fadeMusicInOutSequence = Sequence::create(MusicTo::create(4.0f, 0.7f), MusicTo::create(4.0f, 0.0f), NULL);
+    runAction(fadeMusicInOutSequence);
 
     return true;
 }

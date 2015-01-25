@@ -981,6 +981,32 @@ private:
     CC_DISALLOW_COPY_AND_ASSIGN(DelayTime);
 };
 
+
+/** @brief Changes music volume level
+ */
+class CC_DLL MusicTo : public ActionInterval
+{
+public:
+    /** creates the action */
+    static MusicTo* create(float d, float );
+
+    //
+    // Overrides
+    //
+    virtual void startWithTarget(Node *target) override;
+    virtual void update(float time) override;
+
+    bool initWithDuration(float duration, float volume);
+CC_CONSTRUCTOR_ACCESS:
+    MusicTo() {};
+    virtual ~MusicTo() {}
+private:
+    CC_DISALLOW_COPY_AND_ASSIGN(MusicTo);
+    float _toVolume;
+    float _fromVolume;
+};
+
+
 /** @brief Executes an action in reverse order, from time=duration to time=0
  
  @warning Use this action carefully. This action is not

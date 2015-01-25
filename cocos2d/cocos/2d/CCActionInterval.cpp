@@ -38,6 +38,8 @@ THE SOFTWARE.
 #include "base/CCEventDispatcher.h"
 #include "platform/CCStdC.h"
 
+#include "SimpleAudioEngine.h"
+
 NS_CC_BEGIN
 
 // Extra action for making a Sequence or Spawn when only adding one action to it.
@@ -2108,6 +2110,48 @@ void DelayTime::update(float time)
 DelayTime* DelayTime::reverse() const
 {
     return DelayTime::create(_duration);
+}
+
+//
+// MusicTo
+//
+
+MusicTo* MusicTo::create(float duration, float volume)
+{
+    MusicTo *musicTo = new (std::nothrow) MusicTo();
+    musicTo->initWithDuration(duration, volume);
+    musicTo->autorelease();
+
+    return musicTo;
+}
+
+bool MusicTo::initWithDuration(float duration, float volume)
+{
+    if (ActionInterval::initWithDuration(duration))
+    {
+        _toVolume = volume;
+        return true;
+    }
+
+    return false;
+}
+
+void MusicTo::startWithTarget(Node *target)
+{
+    ActionInterval::startWithTarget(target);
+
+    if (target)
+    {
+        _fromVolume = CocosDenshion::SimpleAudioEngine::getInstance()->getBackgroundMusicVolume();
+    }
+}
+
+void MusicTo::update(float time)
+{
+    if (_target)
+    {
+        CocosDenshion::SimpleAudioEngine::getInstance()->setBackgroundMusicVolume((float)(_fromVolume + (_toVolume - _fromVolume) * time));
+    }
 }
 
 //
